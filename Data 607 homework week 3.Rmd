@@ -1,0 +1,137 @@
+---
+title: "Data 607 Homework week 3"
+author: "Sergio Ortega Cruz"
+date: "September 12, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Week 3 assignment
+
+Please deliver links to an R Markdown file (in GitHub and rpubs.com) with solutions to problems 3 and 4 from chapter 8 of Automated Data Collection in R.  Problem 9 is extra credit.  You may work in a small group, but please submit separately with names of all group participants in your submission.
+Here is the referenced code for the introductory example in #3:
+
+```{r dataraw}
+library(stringr)
+raw.data <-"555-1239Moe Szyslak(636) 555-0113Burns, C. Montgomery555-6542Rev. Timothy Lovejoy555 8904Ned Flanders636-555-3226Simpson, Homer5553642Dr. Julius Hibbert"
+#Use the character class [:alpha:] to extract alphabetic characters
+name <- unlist(str_extract_all(raw.data, "[[:alpha:]., ]{2,}"))
+#View name
+name
+```
+
+### Copy the introductory example. The vector name stores the extracted names.
+R> name
+
+[1] "Moe Syslak"    "Burns, C. Montgomery"  "Rev.Timothy Lovejoy"
+[4] "Ned Flanders"  "Simpson, Homer"   "Dr. Julius Hibbert"
+
+1.- Use tools of this chapter to rearrange the vector so that all the elements conform to the standard
+
+first_name last_name
+
+```{r rearrange}
+rearrange_names <- str_split(name, ",")
+rearrange_names
+
+rearrange_names <- data.frame(rearrange_names)
+rearrange_names
+
+ln <- data.frame(rearrange_names[1,])
+fn <- data.frame(rearrange_names[2, ])
+rearrange_names <- ifelse(fn == ln, ln , rbind(fn, ln))
+rearrange_names
+```
+
+2.- Construct a logical vector indicating wheter a character has a title (i.e., Rev and Dr)
+
+```{r title}
+
+title <- str_detect(name, "[[:alpha:]]{2,}\\.")
+title
+```
+
+3.- Construct a logical vector indicating wheter a character has a second name
+
+```{r second}
+secondname <- str_detect(name, "[A-Z]\\.{1}")
+secondname
+```
+
+### Describe the types of strings that conform to the following regular expressions and construct an example that is matched by regular expression.
+
+1.-[0-9]+\\$
+
+Matches numbers 0-9 zero or more times with a dollar sign following the string
+
+
+```{r sect1}
+
+example <- "6729$"  
+regex = "[0-9]+\\$"
+str_extract(example, regex)
+```
+
+
+2.-\\b[a-z{1,4}]\\b
+
+Matches character a-z at least 1 time and at most 4 times with empty string at either edge of the word
+
+```{r sect2}
+
+example <- "abcd efgh"  
+regex = "\\b[a-z]{1,4}\\b"
+str_extract(example, regex)
+```
+
+3.-*?\\.txt$
+
+Matches a string followed by .txt
+
+```{r sect3}
+
+example <- "abcd.txt"  
+regex = ".*?\\.txt$"
+str_extract(example, regex)
+```
+
+4.-\\d{2}/\\d{2}/\\d{4}
+
+Matches dates with two digit month, two digit day, and four digit year sepreated by
+
+```{r sect4}
+
+example <- "01/17/19889"  
+regex = "\\d{2}/\\d{2}/\\d{4}"
+str_extract(example, regex)
+```
+
+
+5.-<(.+?)>.+?,/\\1>
+
+Matches an HTML tag
+
+```{r sect5}
+
+example = "<Title>Sometext</head><body>Sometext</body>"
+regex = "<(.+?)>.+?</\\1>" 
+str_extract(example, regex) 
+
+```
+
+
+##The following code hides a secret message. Crack it with R and Regular expressions. Hint: Some of the characters are more revealing tha others!The code snippet is also available in the materials at www.r-datacollection.com.
+
+
+```{r challenge}
+extra_credit <-"clcopCow1zmstc0d87wnkig7OvdicpNuggvhryn92Gjuwczi8hqrfpRxs5Aj5dwpn0TanwoUwisdij7Lj8kpf03AT5Idr3coc0bt7yczjatOaootj55t3Nj3ne6c4Sfek.r1w1YwwojigOd6vrfUrbz2.2bkAnbhzgv4R9i05zEcrop.wAgnb.SqoU65fPa1otfb7wEm24k6t3sR9zqe5fy89n6Nd5t9kc4fE905gmc4Rgxo5nhDk!gr"
+extra_credit
+
+#Find all uppercase letters
+str_extract_all(extra_credit, "[[:upper:]]")
+```
+
+INDEED!
